@@ -1439,7 +1439,7 @@ public class Annotate {
         }
     }
 
-    // Método para crear un Getter
+    // Metodo para crear un Getter
     private JCMethodDecl createGetter(TreeMaker make, Names names, VarSymbol field, Symtab syms) {
         JCExpression returnType = make.Type(field.type);
         JCBlock body = make.Block(0, List.of(
@@ -1488,7 +1488,7 @@ public class Annotate {
         );
     }
 
-    // Helper para capitalizar nombres de métodos
+    // Helper para capitalizar nombres de metodos
     private String capitalize(String name) {
         if (name == null || name.isEmpty()) return name;
         return Character.toUpperCase(name.charAt(0)) + name.substring(1);

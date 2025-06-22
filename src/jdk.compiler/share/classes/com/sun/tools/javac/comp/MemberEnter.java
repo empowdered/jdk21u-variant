@@ -472,7 +472,6 @@ public class MemberEnter extends JCTree.Visitor {
         WriteableScope enclScope = enter.enterScope(env);
         ClassSymbol c = (ClassSymbol) tree.sym;
 
-        // Detectar si tiene la anotación @AutoGetSet
         boolean hasAnnotation = false;
         for (JCAnnotation annotation : tree.mods.annotations) {
             if (annotation.annotationType.toString().equals("AutoGetSet") ||
@@ -492,7 +491,6 @@ public class MemberEnter extends JCTree.Visitor {
                 if (def.hasTag(JCTree.Tag.VARDEF)) {
                     JCVariableDecl field = (JCVariableDecl) def;
                     if ((field.mods.flags & (Flags.PRIVATE | Flags.PROTECTED)) != 0) {
-                        // Crear getter
                         JCMethodDecl getter = make.MethodDef(
                                 make.Modifiers(Flags.PUBLIC),
                                 names.fromString("get" + capitalize(field.name.toString())),
@@ -506,7 +504,6 @@ public class MemberEnter extends JCTree.Visitor {
                                 null
                         );
 
-                        // Crear setter
                         JCVariableDecl param = make.VarDef(
                                 make.Modifiers(Flags.PARAMETER),
                                 field.name,
@@ -536,12 +533,7 @@ public class MemberEnter extends JCTree.Visitor {
                 }
             }
 
-            // Agregar métodos generados al principio de la clase
             tree.defs = tree.defs.prependList(newMethods.toList());
         }
-
-        // Procesar normalm
-
-
 
 }
