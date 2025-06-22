@@ -1,4 +1,5 @@
-package java.lang;
+package com.sun.tools.javac.annotations;
+
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
