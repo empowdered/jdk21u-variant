@@ -487,11 +487,11 @@ public class MemberEnter extends JCTree.Visitor {
 
         if (hasAnnotation) {
 
-            Context context = env.context;
+            //Context context = env.context;
 
 
-            TreeMaker make = TreeMaker.instance(context);;
-            Names names = Names.instance(context);
+            TreeMaker make = TreeMaker.instance(this.context);;
+            Names names = Names.instance(this.context);
 
             ListBuffer<JCTree> newMethods = new ListBuffer<>();
 
