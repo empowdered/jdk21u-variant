@@ -46,6 +46,8 @@ import static com.sun.tools.javac.code.Kinds.*;
 import static com.sun.tools.javac.code.Kinds.Kind.*;
 import static com.sun.tools.javac.code.TypeTag.TYPEVAR;
 
+import java.lang.AutoGetSet;
+
 /** Resolves field, method and constructor header, and constructs corresponding Symbols.
  *
  *  <p><b>This is NOT part of any supported API.
@@ -464,4 +466,82 @@ public class MemberEnter extends JCTree.Visitor {
         Env<AttrContext> iEnv = initEnv(tree, env);
         return iEnv;
     }
+
+    @Override
+    public void visitClassDef(JCClassDecl tree) {
+        WriteableScope enclScope = enter.enterScope(env);
+        ClassSymbol c = (ClassSymbol) tree.sym;
+
+        // Detectar si tiene la anotación @AutoGetSet
+        boolean hasAnnotation = false;
+        for (JCAnnotation annotation : tree.mods.annotations) {
+            if (annotation.annotationType.toString().equals("AutoGetSet") ||
+                    annotation.annotationType.toString().equals("lang.AutoGetSet")) {
+                hasAnnotation = true;
+                break;
+            }
+        }
+
+        if (hasAnnotation) {
+            TreeMaker make = TreeMaker.instance(env);
+            Names names = Names.instance(env);
+
+            ListBuffer<JCTree> newMethods = new ListBuffer<>();
+
+            for (JCTree def : tree.defs) {
+                if (def.hasTag(JCTree.Tag.VARDEF)) {
+                    JCVariableDecl field = (JCVariableDecl) def;
+                    if ((field.mods.flags & (Flags.PRIVATE | Flags.PROTECTED)) != 0) {
+                        // Crear getter
+                        JCMethodDecl getter = make.MethodDef(
+                                make.Modifiers(Flags.PUBLIC),
+                                names.fromString("get" + capitalize(field.name.toString())),
+                                field.vartype,
+                                List.nil(),
+                                List.nil(),
+                                List.nil(),
+                                make.Block(0, List.of(
+                                        make.Return(make.Select(make.Ident(names.fromString("this")), field.name))
+                                )),
+                                null
+                        );
+
+                        // Crear setter
+                        JCVariableDecl param = make.VarDef(
+                                make.Modifiers(Flags.PARAMETER),
+                                field.name,
+                                field.vartype,
+                                null
+                        );
+
+                        JCMethodDecl setter = make.MethodDef(
+                                make.Modifiers(Flags.PUBLIC),
+                                names.fromString("set" + capitalize(field.name.toString())),
+                                make.Type(syms.voidType),
+                                List.nil(),
+                                List.of(param),
+                                List.nil(),
+                                make.Block(0, List.of(
+                                        make.Exec(make.Assign(
+                                                make.Select(make.Ident(names.fromString("this")), field.name),
+                                                make.Ident(field.name)
+                                        ))
+                                )),
+                                null
+                        );
+
+                        newMethods.append(getter);
+                        newMethods.append(setter);
+                    }
+                }
+            }
+
+            // Agregar métodos generados al principio de la clase
+            tree.defs = tree.defs.prependList(newMethods.toList());
+        }
+
+        // Procesar normalm
+
+
+
 }

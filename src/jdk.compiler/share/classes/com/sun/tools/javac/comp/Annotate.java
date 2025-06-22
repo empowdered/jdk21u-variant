@@ -403,6 +403,20 @@ public class Annotate {
             toAnnotate.resetAnnotations();
             toAnnotate.setDeclarationAttributes(attrs);
         }
+        for (JCAnnotation anno : withAnnotations) {
+            if (anno.annotationType.type != null &&
+                    anno.annotationType.type.tsym.getQualifiedName().toString().equals("tu.paquete.AutoGetSet")) {
+
+                // Aquí creas los métodos usando TreeMaker
+                // y los inyectas en el símbolo 'toAnnotate' si es ClassSymbol
+
+                if (toAnnotate instanceof ClassSymbol classSym) {
+                    // TODO: inyectar los métodos getX(), setX() para los campos de classSym
+                    System.out.println("Encontrado @AutoGetSet en " + classSym.getQualifiedName());
+                }
+            }
+        }
+
     }
     //where:
         private boolean isAttributeTrue(Attribute attr) {
@@ -1424,4 +1438,60 @@ public class Annotate {
             this.afterTypesQ = afterTypesQ;
         }
     }
+
+    // Método para crear un Getter
+    private JCMethodDecl createGetter(TreeMaker make, Names names, VarSymbol field, Symtab syms) {
+        JCExpression returnType = make.Type(field.type);
+        JCBlock body = make.Block(0, List.of(
+                make.Return(make.Select(make.Ident(names._this), field.name))
+        ));
+
+        return make.MethodDef(
+                make.Modifiers(Flags.PUBLIC),
+                names.fromString("get" + capitalize(field.name.toString())),
+                returnType,
+                List.nil(),
+                List.nil(),
+                List.nil(),
+                body,
+                null
+        );
+    }
+
+    // Método para crear un Setter
+    private JCMethodDecl createSetter(TreeMaker make, Names names, VarSymbol field, Symtab syms) {
+        JCVariableDecl param = make.VarDef(
+                make.Modifiers(Flags.PARAMETER),
+                field.name,
+                make.Type(field.type),
+                null
+        );
+
+        JCStatement assign = make.Exec(
+                make.Assign(
+                        make.Select(make.Ident(names._this), field.name),
+                        make.Ident(field.name)
+                )
+        );
+
+        JCBlock body = make.Block(0, List.of(assign));
+
+        return make.MethodDef(
+                make.Modifiers(Flags.PUBLIC),
+                names.fromString("set" + capitalize(field.name.toString())),
+                make.Type(syms.voidType),
+                List.nil(),
+                List.of(param),
+                List.nil(),
+                body,
+                null
+        );
+    }
+
+    // Helper para capitalizar nombres de métodos
+    private String capitalize(String name) {
+        if (name == null || name.isEmpty()) return name;
+        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
+    }
+
 }
