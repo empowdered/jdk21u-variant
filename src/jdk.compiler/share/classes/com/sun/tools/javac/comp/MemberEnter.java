@@ -70,6 +70,8 @@ public class MemberEnter extends JCTree.Visitor {
     private final Types types;
     private final Names names;
     private final DeferredLintHandler deferredLintHandler;
+    protected final Context context;
+
 
     public static MemberEnter instance(Context context) {
         MemberEnter instance = context.get(memberEnterKey);
@@ -90,6 +92,7 @@ public class MemberEnter extends JCTree.Visitor {
         types = Types.instance(context);
         source = Source.instance(context);
         names = Names.instance(context);
+        this.context = context;
         deferredLintHandler = DeferredLintHandler.instance(context);
     }
 
@@ -520,7 +523,8 @@ public class MemberEnter extends JCTree.Visitor {
                         JCMethodDecl setter = make.MethodDef(
                                 make.Modifiers(Flags.PUBLIC),
                                 //names.fromString("set" + capitalize(field.name.toString())),
-                                field.name.toString().substring(0,1).toUpperCase() + field.name.toString().substring(1),
+                                //field.name.toString().substring(0,1).toUpperCase() + field.name.toString().substring(1),
+                                names.fromString("set" + field.name.toString().substring(0,1).toUpperCase() + field.name.toString().substring(1)),
                                 make.Type(syms.voidType),
                                 List.nil(),
                                 List.of(param),
