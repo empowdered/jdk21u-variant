@@ -535,5 +535,6 @@ public class MemberEnter extends JCTree.Visitor {
 
             tree.defs = tree.defs.prependList(newMethods.toList());
         }
+    }
 
 }
