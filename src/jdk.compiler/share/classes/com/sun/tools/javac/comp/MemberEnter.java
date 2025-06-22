@@ -484,6 +484,9 @@ public class MemberEnter extends JCTree.Visitor {
 
         if (hasAnnotation) {
 
+            Context context = env.context;
+
+
             TreeMaker make = TreeMaker.instance(context);;
             Names names = Names.instance(context);
 
@@ -516,7 +519,8 @@ public class MemberEnter extends JCTree.Visitor {
 
                         JCMethodDecl setter = make.MethodDef(
                                 make.Modifiers(Flags.PUBLIC),
-                                names.fromString("set" + capitalize(field.name.toString())),
+                                //names.fromString("set" + capitalize(field.name.toString())),
+                                field.name.toString().substring(0,1).toUpperCase() + field.name.toString().substring(1),
                                 make.Type(syms.voidType),
                                 List.nil(),
                                 List.of(param),
