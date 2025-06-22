@@ -483,8 +483,9 @@ public class MemberEnter extends JCTree.Visitor {
         }
 
         if (hasAnnotation) {
-            TreeMaker make = TreeMaker.instance(env);
-            Names names = Names.instance(env);
+
+            TreeMaker make = TreeMaker.instance(context);;
+            Names names = Names.instance(context);
 
             ListBuffer<JCTree> newMethods = new ListBuffer<>();
 
@@ -494,7 +495,8 @@ public class MemberEnter extends JCTree.Visitor {
                     if ((field.mods.flags & (Flags.PRIVATE | Flags.PROTECTED)) != 0) {
                         JCMethodDecl getter = make.MethodDef(
                                 make.Modifiers(Flags.PUBLIC),
-                                names.fromString("get" + capitalize(field.name.toString())),
+                                //names.fromString("get" + capitalize(field.name.toString())),
+                                names.fromString("get" + field.name.toString().substring(0,1).toUpperCase() + field.name.toString().substring(1)),
                                 field.vartype,
                                 List.nil(),
                                 List.nil(),
