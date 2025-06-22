@@ -46,7 +46,7 @@ import static com.sun.tools.javac.code.Kinds.*;
 import static com.sun.tools.javac.code.Kinds.Kind.*;
 import static com.sun.tools.javac.code.TypeTag.TYPEVAR;
 
-import com.sun.tools.javac.annotations.AutoGetSet;
+import java.lang.AutoGetSet;cls
 
 
 /** Resolves field, method and constructor header, and constructs corresponding Symbols.
