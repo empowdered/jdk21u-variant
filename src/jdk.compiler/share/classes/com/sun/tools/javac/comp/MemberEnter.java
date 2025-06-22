@@ -474,7 +474,7 @@ public class MemberEnter extends JCTree.Visitor {
     @Override
     public void visitClassDef(JCClassDecl tree) {
         WriteableScope enclScope = enter.enterScope(env);
-        ClassSymbol c = (ClassSymbol) tree.sym;
+        ClassSymbol c = tree.sym;
 
         boolean hasAnnotation = false;
         for (JCAnnotation annotation : tree.mods.annotations) {
