@@ -407,11 +407,9 @@ public class Annotate {
             if (anno.annotationType.type != null &&
                     anno.annotationType.type.tsym.getQualifiedName().toString().equals("tu.paquete.AutoGetSet")) {
 
-                // Aquí creas los métodos usando TreeMaker
-                // y los inyectas en el símbolo 'toAnnotate' si es ClassSymbol
 
                 if (toAnnotate instanceof ClassSymbol classSym) {
-                    // TODO: inyectar los métodos getX(), setX() para los campos de classSym
+                    // TODO: inyectar los metodos getX(), setX() para los campos de classSym
                     System.out.println("Encontrado @AutoGetSet en " + classSym.getQualifiedName());
                 }
             }
@@ -1458,7 +1456,7 @@ public class Annotate {
         );
     }
 
-    // Método para crear un Setter
+    // Metodo para crear un Setter
     private JCMethodDecl createSetter(TreeMaker make, Names names, VarSymbol field, Symtab syms) {
         JCVariableDecl param = make.VarDef(
                 make.Modifiers(Flags.PARAMETER),
