@@ -224,7 +224,6 @@ module jdk.compiler {
     exports com.sun.source.tree;
     exports com.sun.source.util;
     exports com.sun.tools.javac;
-    exports com.sun.tools.javac.annotations;
 
     exports com.sun.tools.doclint to
         jdk.javadoc;
