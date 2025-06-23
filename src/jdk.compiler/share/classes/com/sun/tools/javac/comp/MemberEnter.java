@@ -46,8 +46,6 @@ import static com.sun.tools.javac.code.Kinds.*;
 import static com.sun.tools.javac.code.Kinds.Kind.*;
 import static com.sun.tools.javac.code.TypeTag.TYPEVAR;
 
-import com.sun.tools.javac.annotations.AutoGetSet;
-
 
 /** Resolves field, method and constructor header, and constructs corresponding Symbols.
  *
@@ -478,8 +476,7 @@ public class MemberEnter extends JCTree.Visitor {
 
         boolean hasAnnotation = false;
         for (JCAnnotation annotation : tree.mods.annotations) {
-            if (annotation.annotationType.toString().equals("AutoGetSet") ||
-                    annotation.annotationType.toString().equals("lang.AutoGetSet")) {
+            if (annotation.annotationType.toString().equals("jdk.annotations.AutoGetSet")) {
                 hasAnnotation = true;
                 break;
             }
